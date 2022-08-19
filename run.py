@@ -1,3 +1,4 @@
+from enum import unique
 from flask import Flask, render_template, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, logout_user, current_user, login_required
@@ -30,10 +31,24 @@ def load_user(user_id):
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(10), nullable=False, unique=True)
+    name = db.Column(db.String(30), nullable=False) ##
+    phno = db.Column(db.String(11), nullable=False, unique=True) ##
+    email = db.Column(db.String(50), nullable=False, unique=True) ##
+    hostel = db.Column(db.String(1), nullable=False) ##
+    room = db.Column(db.String(5), nullable=False) ##
+    branch = db.Column(db.String(10), nullable=False) ##
+    year = db.Column(db.String(2), nullable=False) ##
     password = db.Column(db.String(80), nullable=False)
 
 class RegistrationForm(FlaskForm):
-    username = StringField(validators=[InputRequired(), Length(min=9, max=10)], render_kw={"placeholder":"Roll number"})
+    username = StringField(validators=[InputRequired(), Length(min=9, max=10)], render_kw={"placeholder":"Roll Number"})
+    name = StringField(validators=[InputRequired(), Length(min=5, max=30)], render_kw={"placeholder": "Full Name"}) #
+    phno = StringField(validators=[InputRequired(), Length(min=10, max=11)], render_kw={"placeholder": "Mobile Number"}) #
+    email = StringField(validators=[InputRequired(), Length(min=15, max=50)], render_kw={"placeholder": "Email Id"}) #
+    hostel = StringField(validators=[InputRequired(), Length(min=1, max=2)], render_kw={"placeholder": "Hostel"}) #
+    room = StringField(validators=[InputRequired(), Length(min=4, max=5)], render_kw={"placeholder": "Room"}) #
+    branch = StringField(validators=[InputRequired(), Length(min=4, max=10)], render_kw={"placeholder": "Branch"}) #
+    year = StringField(validators=[InputRequired(), Length(min=1, max=2)], render_kw={"placeholder": "Year"}) #
     password = PasswordField(validators=[InputRequired(), Length(min=4, max=20)], render_kw={"placeholder":"Password"})
     submit = SubmitField("Register")
 
@@ -82,7 +97,7 @@ def register():
     if form.validate_on_submit():
         print("Hello")
         hashed_password = bcrypt.generate_password_hash(form.password.data)
-        new_user = User(username=form.username.data, password=hashed_password)
+        new_user = User(username=form.username.data, name=form.name.data, phno=form.phno.data, email=form.email.data, hostel=form.hostel.data, room=form.room.data, branch=form.branch.data, year=form.year.data, password=hashed_password)
         db.session.add(new_user)
         db.session.commit()
         return redirect(url_for('login'))
