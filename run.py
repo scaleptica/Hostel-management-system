@@ -111,7 +111,7 @@ def logout():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        print("Hello")
+        #print("Hello")
         hashed_password = bcrypt.generate_password_hash(form.password.data)
         new_user = User(username=form.username.data, name=form.name.data, phno=form.phno.data, email=form.email.data, hostel=form.hostel.data, room=form.room.data, branch=form.branch.data, year=form.year.data, password=hashed_password)
         db.session.add(new_user)

@@ -31,9 +31,9 @@
           <div class="card-body text-center">
             <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
               class="rounded-circle img-fluid" style="width: 150px;">
-            <h5 class="my-3">Kartik Mathur</h5>
-            <p class="text-muted mb-1">Branch : COE</p>
-            <p class="text-muted mb-4">4th year</p>
+            <h5 class="my-3">{{ current_user.name }}</h5>
+            <p class="text-muted mb-1">Branch : {{ current_user.branch }}</p>
+            <p class="text-muted mb-4">{{ current_user.year }}th year</p>
           </div>
         </div>
       </div>
@@ -48,7 +48,7 @@
                 <p class="mb-0">Full Name</p>
               </div>
               <div class="col-sm-9">
-                <p class="text-muted mb-0">Kartik Mathur</p>
+                <p class="text-muted mb-0">{{ current_user.name }}</p>
               </div>
             </div>
             <hr>
@@ -57,7 +57,7 @@
                 <p class="mb-0">Roll number</p>
               </div>
               <div class="col-sm-9">
-                <p class="text-muted mb-0">101906162</p>
+                <p class="text-muted mb-0">{{ current_user.username }}</p>
               </div>
             </div>
             <hr>
@@ -66,7 +66,7 @@
                 <p class="mb-0">Email id</p>
               </div>
               <div class="col-sm-9">
-                <p class="text-muted mb-0">kmathur_be19@thapar.edu</p>
+                <p class="text-muted mb-0">{{ current_user.email }}</p>
               </div>
             </div>
             <hr>
@@ -75,7 +75,7 @@
                 <p class="mb-0">Phone number</p>
               </div>
               <div class="col-sm-9">
-                <p class="text-muted mb-0">(098) 765-4321</p>
+                <p class="text-muted mb-0">{{ current_user.phno }}</p>
               </div>
             </div>
             <hr>
@@ -84,7 +84,7 @@
                 <p class="mb-0">Hostel</p>
               </div>
               <div class="col-sm-9">
-                <p class="text-muted mb-0">M</p>
+                <p class="text-muted mb-0">{{ current_user.hostel }}</p>
               </div>
             </div>
 
@@ -94,7 +94,7 @@
                 <p class="mb-0">Room number</p>
               </div>
               <div class="col-sm-9">
-                <p class="text-muted mb-0">A-427</p>
+                <p class="text-muted mb-0">{{ current_user.room }}</p>
               </div>
             </div>
 
