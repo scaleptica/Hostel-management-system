@@ -1,4 +1,3 @@
-from enum import unique
 from flask import Flask, render_template, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, logout_user, current_user, login_required
@@ -18,6 +17,9 @@ app = Flask(__name__)
 bcrypt = Bcrypt(app)
 db  = SQLAlchemy(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.config['SQLALCHEMY_BINDS'] = {
+    'hostel': 'sqlite:///hostel_data.db',
+}
 app.config['SECRET_KEY'] = 'thisisasecretkey'
 
 login_manager = LoginManager()
@@ -27,6 +29,20 @@ login_manager.login_view = "login"
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
+class Hostel(db.Model):
+    __bind_key__ = 'hostel'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(2), nullable=False, unique=True)
+    warden = db.Column(db.String(20), nullable=False)
+    caretaker_name = db.Column(db.String(20), nullable=False)
+    caretaker_email = db.Column(db.String(20), nullable=False, unique=True)
+    caretaker_no = db.Column(db.String(20), nullable=False, unique=True)
+    ni_caretaker = db.Column(db.String(20), nullable=False)
+    ni_caretaker_no = db.Column(db.String(20), nullable=False, unique=True)
+    ambulance = db.Column(db.String(20), nullable=False)
+    dispensary = db.Column(db.String(20), nullable=False)
+
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
