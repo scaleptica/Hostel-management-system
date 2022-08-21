@@ -12,13 +12,13 @@
     <title></title>
     {% endblock %}
   </head>
-<body style="background-image: url('static/images/YyTLwz.jpg');font-family: 'Montserrat', sans-serif;">
+<body style="background-image: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(153,19,130,1) 49%, rgba(0,212,255,1) 100%);">
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <a class="navbar-brand" href="#">Dashboard</a>
+  <a class="navbar-brand" href="{{url_for('home')}}">Dashboard</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -32,12 +32,6 @@
       </li>
       <li class="nav-item">
         <a class="nav-link" href="#">Contact Us</a>
-      </li>
-        <li class="nav-item">
-        <a class="nav-link" href="#">Hostel Query</a>
-      </li>
-        <li class="nav-item">
-        <a class="nav-link" href="#">Mess Query</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="{{ url_for('logout') }}" tabindex="-1">Logout</a>

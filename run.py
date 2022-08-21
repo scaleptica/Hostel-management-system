@@ -83,7 +83,9 @@ class LoginForm(FlaskForm):
 @dont_cache()
 @login_required
 def home():
-    return render_template('firstpage.html')
+    # get hostel data from database
+    hostel = Hostel.query.filter_by(name=current_user.hostel).first()
+    return render_template('firstpage.html',hostel=hostel)
 
 @app.route('/', methods=['GET','POST'])
 @app.route('/login', methods=['GET','POST'])
@@ -92,6 +94,7 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username = form.username.data).first()
+        print(type(user))
         if user:
             if bcrypt.check_password_hash(user.password, form.password.data):
                 login_user(user)
@@ -111,7 +114,6 @@ def logout():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        #print("Hello")
         hashed_password = bcrypt.generate_password_hash(form.password.data)
         new_user = User(username=form.username.data, name=form.name.data, phno=form.phno.data, email=form.email.data, hostel=form.hostel.data, room=form.room.data, branch=form.branch.data, year=form.year.data, password=hashed_password)
         db.session.add(new_user)
@@ -119,6 +121,7 @@ def register():
         return redirect(url_for('login'))
 
     return render_template('register.html', form=form)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
