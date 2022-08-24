@@ -122,6 +122,12 @@ def register():
 
     return render_template('register.html', form=form)
 
+@app.route('/<>hostel/')
+@login_required
+@dont_cache()
+def goto():
+    return render_template('hostel.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
