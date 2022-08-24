@@ -79,7 +79,7 @@ class LoginForm(FlaskForm):
     password = PasswordField(validators=[InputRequired(), Length(min=4, max=20)], render_kw={"placeholder":"Password"})
     submit = SubmitField("Login")
 
-@app.route('/home')
+@app.route('/{{current_user}}/home')
 @dont_cache()
 @login_required
 def home():
@@ -122,10 +122,10 @@ def register():
 
     return render_template('register.html', form=form)
 
-@app.route('/<>hostel/')
+@app.route('/{{current_user}}/hostel/')
 @login_required
 @dont_cache()
-def goto():
+def hostel():
     return render_template('hostel.html')
 
 

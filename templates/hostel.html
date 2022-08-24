@@ -1,154 +1,81 @@
-<!DOCTYPE html>
+{% extends "base.html" %}
 
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700,900|Ubuntu:400,700" rel="stylesheet">
-
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
-        integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
-
-    <link rel="stylesheet" href="./css/styles.css">
-
+{% block title %}
     <title>Hostel</title>
-</head>
+{% endblock %}
 
-<body style="background-image: url('images/LtawAz.jpg'); font-family: 'Montserrat', sans-serif;">
-    <section id="title">
+{% block content %}
+<br>
+<br>
+<div style="padding: 0% 15% 3%;">
+  <div class="card border-primary mb-3">
+    <div class="card-header">
+        <h3 class="info" style="color: #000000">Complaints Table</h3>
 
-        <div class="container-fluid">
-            <nav class="navbar navbar-expand-lg navbar-dark">
-                <a class="navbar-brand" style="color: #0d6efd;" href="firstpage.html"><i class="fas fa-user-graduate"></i>
-                    Dashboard</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link" style="color: #0d6efd;" href="hostel.html">Hostel</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" style="color: #0d6efd;" href="mess.html">Mess</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" style="color: #0d6efd;" href="https://www.thapar.edu/pages/contactus">Contact Us</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" style="color: #0d6efd;" href="login.html">Logout</a>
-                        </li>
-                    </ul>
+        <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: #000000" >
+              Categories
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+              <button class="dropdown-item" type="button">Active Complaints</button>
+              <button class="dropdown-item" type="button">Previous Complaints</button>
+              <!-- <button class="dropdown-item" type="button"></button> -->
+            </div>
+          </div>
+
+    </div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">First</th>
+        <th scope="col">Last</th>
+        <th scope="col">Handle</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+    </tbody>
+  </table>
+</div>
+</div>
+<br>
+<div style="padding: 0% 15% 3%;">
+<div class="card" >
+    <div class="card-header">
+        <h4 style="font-size: 1.5rem">Have a complaint?</h4>
+    </div>
+    <div class="card-body">
+        <div class="input-group" style="text-align: end; padding:2% 2%;">
+            <select class="form-select" name="c_type" id="inputGroupSelect04" aria-label="Example select with button addon">
+                <option selected>Choose from the following</option>
+                <option value="1">Electricity</option>
+                <option value="2">Furniture</option>
+                <option value="3">Room Maintainence</option>
+                <option value="4">Plumbing</option>
+            </select>
+        </div>
+
+        <div style="padding:2% 2%;">
+            <h4 style="font-size: 1.5rem">Choose the time and date</h4>
+            <form action="">
+                <input type="datetime-local" id="time" name="time" style="margin-right: 20px;">
+                <a href=""><i class="far fa-check-circle fa-2x"></i></a>
+            </form>
+        </div>
+
+        <div style="text-align: end; padding:2% 2%;">
+            <form action="" method="POST">
+                <div class="form-group" style="text-align: center;">
+                    <textarea class="form-control" name="postContent"
+                        placeholder="Explain your complain in detail here." style="border-radius: 10px;"
+                        rows="5"></textarea><br>
                 </div>
-            </nav>
+                <button class="btn btn-primary" type="submit" name="button">Register</button>
+            </form>
         </div>
-    </section>
+    </div>
+  </div>
+</div>
 
-    <section id="detailing">
-        <h2 class="section-heading" style="color: #0d6efd;">Complaints Section</h2>
-        <div class="row">
-            <div class="col-lg-6 col-md-6" style="padding: 3% 5%;">
-
-                <div class="card border-primary mb-3">
-                    <div class="card-header">
-                        <h3 class="info" style="color: #0d6efd;">Complaints Pending</h3>
-                    </div>
-                    <div class="card-body" style="text-align: left;">
-                        <p class="card-text" style="color: #6E3CBC;">
-                            <ul>
-                                <li>Rodents problem in room no. 301. <br> - Yash Garg, 5th Semester</li>
-                                <li>Air conditioning fault in room no. 112. <br> - Ayush Sharma, 3rd Semester</li>
-                                <li>Hostel amount already paid but not updated in the final list. <br> - Vineel Sai, 5th
-                                    Semester</li>
-                                <li><a href="">More</a></li>
-                            </ul>
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-6 col-md-6" style="padding: 3% 5%;">
-                <div class="card text-white bg-primary mb-3">
-                    <div class="card-header">
-                        <h3 class="info" style="color: #fff;">Complaints History</h3>
-                    </div>
-                    <div class="card-body" style="text-align: left;">
-                        <p class="card-text">
-                            <ul>
-                                <li>Hostel room not available. <br> - Gaurish Sharma, 1st Semester</li>
-                                <li>Both the fans are not working and are so rusty and old in room no. 501. <br> -
-                                    Balwant Rai, 3rd Semester</li>
-                                <li>Some seniors trouble me again and again saying they want my intro. <br> - Anonymous,
-                                    1st Semester</li>
-                                <li><a href="" style="color: #fff;">More</a></li>
-                            </ul>
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-    </section>
-
-    <section id="complaint-section">
-        <div style="padding: 0% 15% 3%; text-align: center;">
-            <h2 class="section-heading" style="color: #0d6efd;">Have a complain?</h2>
-            <div class="input-group">
-                <select class="form-select" id="inputGroupSelect04" aria-label="Example select with button addon">
-                    <option selected>Choose from the following...</option>
-                    <option value="1">Electricity</option>
-                    <option value="2">Furniture</option>
-                    <option value="3">Room Maintainence</option>
-                    <option value="4">Plumbing</option>
-                </select>
-            </div>
-
-            <div style="padding:2% 2%;">
-                <h4 style="font-size: 1.5rem; color: #6E3CBC;">Choose the time you are available at your room to resolve the complaint:</h4>
-                <form action="">
-                    <input type="datetime-local" id="time" name="time" style="margin-right: 20px;">
-                    <a href=""><i class="far fa-check-circle fa-2x"></i></a>
-                </form>
-            </div>
-            
-            <div style="text-align: end; padding-top: 30px;">
-                <form action="" method="POST">
-                    <div class="form-group" style="text-align: center;">
-                        <textarea class="form-control" name="postContent"
-                            placeholder="Explain your complain in detail here." style="border-radius: 10px;"
-                            rows="5"></textarea><br>
-                    </div>
-                    <button class="btn btn-primary" type="submit" name="button">Register</button>
-                </form>
-            </div>
-        </div>
-    </section>
-
-    <footer id="footer">
-
-        <div>
-            <a href="https://www.facebook.com/officialTIET/"><i class="fab fa-facebook-f fa-2x social-icon"></i></a>
-            <a href="https://twitter.com/TIETofficial?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor"><i
-                    class="fab fa-twitter fa-2x social-icon"></i></a>
-            <a href="https://www.thapar.edu/"><i class="fab fa-chrome fa-2x social-icon"></i></a>
-            <a href="https://www.youtube.com/channel/UCybEMnvVQqGi80wfAd1F8oA"><i
-                    class="fab fa-youtube fa-2x social-icon"></i></a>
-            <p>Made by Yash Garg</p>
-        </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous">
-    </script>
-</body>
-
-</html>
+{% endblock %}
