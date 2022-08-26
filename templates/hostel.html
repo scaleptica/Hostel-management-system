@@ -11,27 +11,36 @@
   <div class="card border-primary mb-3">
     <div class="card-header">
         <h3 class="info" style="color: #000000">Complaints Table</h3>
-
+      <form method="POST">
         <div class="dropdown">
             <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: #000000" >
               Categories
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-              <button class="dropdown-item" type="button">Active Complaints</button>
-              <button class="dropdown-item" type="button">Previous Complaints</button>
+              <button class="dropdown-item" type="button" value="active" name="choice">Active Complaints</button>
+              <button class="dropdown-item" type="button" value="previous" name="choice">Previous Complaints</button>
               <!-- <button class="dropdown-item" type="button"></button> -->
             </div>
           </div>
+        </form>
 
     </div>
   <table class="table table-striped">
     <thead>
       <tr>
-        <th scope="col">#</th>
-        <th scope="col">First</th>
-        <th scope="col">Last</th>
-        <th scope="col">Handle</th>
+        <th scope="col">Complaint type</th>
+        <th scope="col">Appointed Date</th>
+        <th scope="col">Complaint</th>
+        <th scope="col">Complaint made on</th>
       </tr>
+      {% for compla in complaints %}
+      <tr>
+        <td>{{compla.c_type}}</td>
+        <td>{{compla.date_}}</td>
+        <td>{{compla.complaint}}</td>
+        <td>{{compla.entry_date}}</td>
+      </tr>
+      {% endfor %}
     </thead>
     <tbody>
       
@@ -49,22 +58,16 @@
       <form method="POST" action="">
         {{ form.hidden_tag() }}
         <div class="input-group" style="text-align: end; padding:2% 2%;">
-          <!-- <select class="form-select" name="c_type" id="inputGroupSelect04" aria-label="Example select with button addon">
-              <option selected>Choose from the following</option>
-              <option value="1">Electricity</option>
-              <option value="2">Furniture</option>
-              <option value="3">Room Maintainence</option>
-              <option value="4">Plumbing</option>
-          </select> -->
-          {{form.c_type(class_="form-select") }}
-      
-          <div style="padding:2% 2%;">
-            {{ form.date_(class_ = "datepicker") }}
-          </div>
+        {{form.c_type(class_="form-select") }}
+      </div>
+      <div class="input-group" style="text-align: end; padding:2% 2%;">
+        {{ form.date_(class_ = "datepicker") }}
+      </div>
+        
 
       <div style="text-align: end; padding:2% 2%;">
           <div class="form-group" style="text-align: center;">
-            {{form.complaint(class_="form-control") }}
+            {{form.complaint(class_="form-control", cols="25", rows="10") }}
              <!-- <textarea class="form-control" name="postContent"
                   placeholder="Explain your complain in detail here." style="border-radius: 10px;"
                   rows="5"></textarea><br>-->

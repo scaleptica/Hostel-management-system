@@ -1,8 +1,10 @@
+from email.policy import default
+import re
 from flask import Flask, render_template, url_for, redirect, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, logout_user, current_user, login_required
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, SelectField, DateField
+from wtforms import StringField, PasswordField, SubmitField, SelectField, DateField, TextAreaField
 from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
 from datetime import datetime
@@ -55,9 +57,10 @@ class Hostel_q(db.Model):
     room_no = db.Column(db.String(5), nullable=False)
     hostel_ = db.Column(db.String(1), nullable=False)
     phone = db.Column(db.String(11), nullable=False)
-    compla_stat = db.Column(db.String(10), nullable=False)
+    compla_stat = db.Column(db.String(10), default="active")
+    entry_date = db.Column(db.DateTime, default=datetime.utcnow)
 
-class Mess_q(db.model):
+class Mess_q(db.Model):
     __bind_key__ = 'hostel_m'
     id = db.Column(db.Integer, primary_key=True)
     name_ = db.Column(db.String(30), nullable=False)
@@ -71,18 +74,14 @@ class Mess_query_form(FlaskForm):
     breakfast_attendance = StringField(validators=[Length(min=0, max=10)])
     lunch_attendance = StringField(validators=[Length(min=0, max=10)])
     dinner_attendance = StringField(validators=[Length(min=0, max=10)])
-    feedback = StringField(validators=[Length(min=0, max=100)])
+    feedback = TextAreaField(validators=[Length(min=0, max=100)], render_kw={"placeholder":"A short feedback"})
     submit = SubmitField("Send")
 
 
 class Hostel_query_form(FlaskForm):
     c_type = SelectField(u'Field name', choices = ["Electricity","Plumbing","Furniture"], validators = [InputRequired()])
     date_ = DateField('DatePicker', format='%Y-%m-%d',validators = [InputRequired()] )
-    complaint = StringField(validators=[InputRequired(), Length(min=1, max=100)])
-    # room_no = StringField(validators=[InputRequired(), Length(min=1, max=10)])
-    # hostel_ = StringField(validators=[InputRequired(), Length(min=1, max=10)])
-    # phone = StringField(validators=[InputRequired(), Length(min=1, max=11)])
-    # compla_stat = StringField(validators=[InputRequired(), Length(min=1, max=10)])
+    complaint = TextAreaField(validators=[InputRequired(), Length(min=1, max=100)], render_kw={"placeholder":"Explain your problem here"})
     submit = SubmitField("Submit")
 
 
@@ -175,6 +174,13 @@ def register():
 @dont_cache()
 def hostel():
     form = Hostel_query_form()
+    complaints = Hostel_q.query.filter_by(compla_stat="active").order_by(Hostel_q.id.desc()).limit(5).all()
+    if request.method == "POST":
+        # error
+        if request.form.get('choice') == "active":
+            complaints = Hostel_q.query.filter_by(compla_stat = "active")
+        
+
     if form.validate_on_submit():
         #print("Hello")
         type1 = form.c_type.data
@@ -184,26 +190,42 @@ def hostel():
         room1 = current_user.room
         hostel1 = current_user.hostel
         phone1 = current_user.phno
-        complaint_details = Hostel_q(c_type=type1, date_=date1, complaint=complaint1, room_no=room1, hostel_=hostel1, phone=phone1, compla_stat="active")
+        complaint_details = Hostel_q(c_type=type1, date_=date1, complaint=complaint1, room_no=room1, hostel_=hostel1, phone=phone1)
         db.session.add(complaint_details)
         db.session.commit()
-    return render_template('hostel.html',form=form)
+        complaints = Hostel_q.query.filter_by(compla_stat="active").order_by(Hostel_q.id.desc()).limit(5).all()
+    return render_template('hostel.html',form=form, complaints = complaints)
 
 @app.route('/{{current_user}}/mess/', methods=['GET','POST'])
 @login_required
 @dont_cache()
 def mess():
     form = Mess_query_form()
-    if form.validate_on_submit():
-        list = request.form.getlist('attendance')
-        b_attendance, l_attendance, d_attendance = list
+    if request.method == "POST" and form.validate_on_submit():
+        checklist_ans = request.form.getlist('attendance')
+        att_key_val = {
+            "breakfast" : 0,
+            "lunch" : 1,
+            "dinner" : 2,
+        }
+        attendance = ["NA", "NA", "NA"]
+
+        for x in checklist_ans:
+            attendance[att_key_val[x]] = "Done"
+
         feedback1 = form.feedback.data
         name1 = current_user.name
-        mess_details = Mess_q(name_=name1, breakfast_attendance=b_attendance, lunch_attendance=l_attendance, dinner_attendance=d_attendance, feedback=feedback1)
+        mess_details = Mess_q(name_=name1, breakfast_attendance=attendance[0], lunch_attendance=attendance[1], dinner_attendance=attendance[2], feedback=feedback1)
         db.session.add(mess_details)
         db.session.commit()
     return render_template('mess.html', form=form)
 
+
+@login_required
+@dont_cache()
+@app.route('/about')
+def about():
+    return render_template('aboutus.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
