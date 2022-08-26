@@ -1,10 +1,11 @@
-from flask import Flask, render_template, url_for, redirect
+from flask import Flask, render_template, url_for, redirect, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, logout_user, current_user, login_required
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
+from wtforms import StringField, PasswordField, SubmitField, SelectField, DateField
 from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
+from datetime import datetime
 from flask_cachecontrol import (
     cache,
     cache_for,
@@ -19,6 +20,8 @@ db  = SQLAlchemy(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_BINDS'] = {
     'hostel': 'sqlite:///hostel_data.db',
+    'hostel_c': 'sqlite:///hostel_compla.db',
+    'hostel_m': 'sqlite:///mess_compla.db'
 }
 app.config['SECRET_KEY'] = 'thisisasecretkey'
 
@@ -42,6 +45,45 @@ class Hostel(db.Model):
     ni_caretaker_no = db.Column(db.String(20), nullable=False, unique=True)
     ambulance = db.Column(db.String(20), nullable=False)
     dispensary = db.Column(db.String(20), nullable=False)
+
+class Hostel_q(db.Model):
+    __bind_key__ = 'hostel_c'
+    id = db.Column(db.Integer, primary_key=True)
+    c_type = db.Column(db.String(10), nullable=False)
+    date_ = db.Column(db.String(20), nullable=False)
+    complaint = db.Column(db.String(100), nullable=False)
+    room_no = db.Column(db.String(5), nullable=False)
+    hostel_ = db.Column(db.String(1), nullable=False)
+    phone = db.Column(db.String(11), nullable=False)
+    compla_stat = db.Column(db.String(10), nullable=False)
+
+class Mess_q(db.model):
+    __bind_key__ = 'hostel_m'
+    id = db.Column(db.Integer, primary_key=True)
+    name_ = db.Column(db.String(30), nullable=False)
+    breakfast_attendance = db.Column(db.String(10), nullable=False)
+    lunch_attendance = db.Column(db.String(10), nullable=False)
+    dinner_attendance = db.Column(db.String(10), nullable=False)
+    entry_date = db.Column(db.DateTime, default=datetime.utcnow)
+    feedback = db.Column(db.String(100))
+
+class Mess_query_form(FlaskForm):
+    breakfast_attendance = StringField(validators=[Length(min=0, max=10)])
+    lunch_attendance = StringField(validators=[Length(min=0, max=10)])
+    dinner_attendance = StringField(validators=[Length(min=0, max=10)])
+    feedback = StringField(validators=[Length(min=0, max=100)])
+    submit = SubmitField("Send")
+
+
+class Hostel_query_form(FlaskForm):
+    c_type = SelectField(u'Field name', choices = ["Electricity","Plumbing","Furniture"], validators = [InputRequired()])
+    date_ = DateField('DatePicker', format='%Y-%m-%d',validators = [InputRequired()] )
+    complaint = StringField(validators=[InputRequired(), Length(min=1, max=100)])
+    # room_no = StringField(validators=[InputRequired(), Length(min=1, max=10)])
+    # hostel_ = StringField(validators=[InputRequired(), Length(min=1, max=10)])
+    # phone = StringField(validators=[InputRequired(), Length(min=1, max=11)])
+    # compla_stat = StringField(validators=[InputRequired(), Length(min=1, max=10)])
+    submit = SubmitField("Submit")
 
 
 class User(db.Model, UserMixin):
@@ -79,13 +121,16 @@ class LoginForm(FlaskForm):
     password = PasswordField(validators=[InputRequired(), Length(min=4, max=20)], render_kw={"placeholder":"Password"})
     submit = SubmitField("Login")
 
+
 @app.route('/{{current_user}}/home')
+@app.route('/home')
 @dont_cache()
 @login_required
 def home():
     # get hostel data from database
     hostel = Hostel.query.filter_by(name=current_user.hostel).first()
     return render_template('firstpage.html',hostel=hostel)
+
 
 @app.route('/', methods=['GET','POST'])
 @app.route('/login', methods=['GET','POST'])
@@ -94,7 +139,7 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username = form.username.data).first()
-        print(type(user))
+        #print(type(user))
         if user:
             if bcrypt.check_password_hash(user.password, form.password.data):
                 login_user(user)
@@ -102,12 +147,14 @@ def login():
 
     return render_template('login.html', form=form)
 
+
 @app.route('/logout', methods=['GET','POST'])
 @dont_cache()
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('login'))
+
 
 @app.route('/register', methods=['GET','POST'])
 @dont_cache()
@@ -122,11 +169,40 @@ def register():
 
     return render_template('register.html', form=form)
 
-@app.route('/{{current_user}}/hostel/')
+
+@app.route('/{{current_user}}/hostel/', methods=['GET','POST'])
 @login_required
 @dont_cache()
 def hostel():
-    return render_template('hostel.html')
+    form = Hostel_query_form()
+    if form.validate_on_submit():
+        #print("Hello")
+        type1 = form.c_type.data
+        date1 = form.date_.data
+        #print(date1)
+        complaint1 = form.complaint.data
+        room1 = current_user.room
+        hostel1 = current_user.hostel
+        phone1 = current_user.phno
+        complaint_details = Hostel_q(c_type=type1, date_=date1, complaint=complaint1, room_no=room1, hostel_=hostel1, phone=phone1, compla_stat="active")
+        db.session.add(complaint_details)
+        db.session.commit()
+    return render_template('hostel.html',form=form)
+
+@app.route('/{{current_user}}/mess/', methods=['GET','POST'])
+@login_required
+@dont_cache()
+def mess():
+    form = Mess_query_form()
+    if form.validate_on_submit():
+        list = request.form.getlist('attendance')
+        b_attendance, l_attendance, d_attendance = list
+        feedback1 = form.feedback.data
+        name1 = current_user.name
+        mess_details = Mess_q(name_=name1, breakfast_attendance=b_attendance, lunch_attendance=l_attendance, dinner_attendance=d_attendance, feedback=feedback1)
+        db.session.add(mess_details)
+        db.session.commit()
+    return render_template('mess.html', form=form)
 
 
 if __name__ == '__main__':
